@@ -24,3 +24,14 @@ const validate = ({from, to, fizz=3, buzz=5}: FizzBuzzSetting):Required<FizzBuzz
 
     return {from,to,fizz,buzz};
 }
+
+export const fizzbuzz = (setting: FizzBuzzSetting): string[] => {
+    const {from, to, fizz, buzz} = validate(setting);
+
+    return Array.from({length: (to - from + 1)}, (_,i) => i + from).map((n):string =>{
+        if(n % (fizz * buzz) === 0) return "fizzbuzz";
+        if(n % fizz === 0) return "fizz";
+        if(n % buzz === 0) return "buzz";
+        return n.toString();
+    });
+}
