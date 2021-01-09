@@ -6,7 +6,6 @@ import {isFizzBuzzSetting, fizzbuzz} from './domain';
 
 const s3 = new S3();
 
-// load setting file
 const loadSetting = async(bucket: string, key: string): Promise<Object> => {
     const response = await s3.getObject({
         Bucket: bucket,
@@ -18,7 +17,7 @@ const loadSetting = async(bucket: string, key: string): Promise<Object> => {
         if(key.endsWith(".json")){
             return JSON.parse(body);
         }else{
-            return yaml.safeLoad(body);
+            return yaml.load(body);
         }
     }else{
         throw new Error(`Load setting file failure:${key} on ${bucket}`);
@@ -38,7 +37,7 @@ const saveResult = async (bucket: string, settingName: string, result: string[])
 }
 
 const isTargetEvent = (record: S3EventRecord): boolean => record.eventName.startsWith("ObjectCreated:")
-    && (record.s3.object.key.endsWith(".json") || record.s3.object.key.endsWith(".yaml")) || record.s3.object.key.endsWith(".yml"));
+    && (record.s3.object.key.endsWith(".json") || record.s3.object.key.endsWith(".yaml")) || record.s3.object.key.endsWith(".yml");
 
 export const handler:S3Handler = async(event:S3Event) => {
     for(const record of event.Records){
